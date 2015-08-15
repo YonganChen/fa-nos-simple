@@ -16,12 +16,15 @@
 
 #define CLK_SRC0        (*((volatile uint32_t *)0xE0100200))     // Clock Source Control Registers
 #define CLK_SRC4        (*((volatile uint32_t *)0xE0100210))     // Clock Source Control Registers, b19~16:UART0_SEL
+#define CLK_SRC5        (*((volatile uint32_t *)0xE0100214))     
 #define CLK_DIV0        (*((volatile uint32_t *)0xE0100300))     // Clock Divider Control Register
 #define CLK_DIV4        (*((volatile uint32_t *)0xE0100310))     // Clock Divider Control Register, b19~16:UART0_RATIO
+#define CLK_DIV5        (*((volatile uint32_t *)0xE0100314))
 #define CLK_GATE_IP1    (*((volatile uint32_t *)0xE0100464))
 #define CLK_GATE_IP3    (*((volatile uint32_t *)0xE010046C))     // Clock Gating Control Register
 #define MPLL_CON        (*((volatile uint32_t *)0xE0100108))     // MPLL Control Registers
 #define APLL_CON0       (*((volatile uint32_t *)0xE0100100))     // APLL Control Registers
+#define CLK_SRC_MASK0   (*((volatile uint32_t *)0xE0100280)) 
 
 
 uint32_t get_hclk_dsys(void);

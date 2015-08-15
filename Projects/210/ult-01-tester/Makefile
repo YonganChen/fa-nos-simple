@@ -5,7 +5,7 @@
 #
 
 # define the project name, and the cpu type
-PRJ = 2451-ult01tester
+PRJ = 210-ult01tester
 PRJLIB = ../../../Components
 CPU = arm926ej-s
 
@@ -18,12 +18,12 @@ OP   = $(PREFIX)objcopy
 OD   = $(PREFIX)objdump
 SZ   = $(PREFIX)size
 
-LDSCRIPT = $(PRJLIB)/2451/FA2451Dram.ld
+LDSCRIPT = $(PRJLIB)/210/FA210Dram.ld
 
 # list C source files here
 SRC  = ult-01-tester.c \
-       $(PRJLIB)/2451/uart/uart.c \
-       $(PRJLIB)/2451/spi/spi.c \
+       $(PRJLIB)/210/uart/uart.c \
+       $(PRJLIB)/210/timer/timer.c \
        $(PRJLIB)/xprintf/xprintf.c 
        
 # list ASM source files here
@@ -37,7 +37,7 @@ LIBDIR =
 # list build tools options here
 CCFLAGS = -mcpu=$(CPU) -I $(PRJLIB) -c     
 ASFLAGS = -mcpu=$(CPU)  -c
-LDFLAGS = -nostartfiles -T $(LDSCRIPT) -Wl,-Map=$(PRJ).map
+LDFLAGS = -nostartfiles -T $(LDSCRIPT) -lm -Wl,-Map=$(PRJ).map
 OPFLAGS = -O binary
 ODFLAGS = -h -S
 SZFLAGS = 
@@ -49,15 +49,15 @@ SZFLAGS =
 all: $(PRJ).elf
 
 $(PRJ).elf: $(OBJS)
-	$(LD) $(LDFLAGS)  $(OBJS) -o $@
-	$(SZ) $(SZFLAGS)  $(PRJ).elf
-	$(OP) $(OPFLAGS)  $(PRJ).elf $(PRJ).bin
+	$(LD) $(OBJS) -o  $@         $(LDFLAGS)
+	$(SZ) $(PRJ).elf             $(SZFLAGS)
+	$(OP) $(PRJ).elf $(PRJ).bin  $(OPFLAGS)
 
 %.o : %.c
-	$(CC)  $(CCFLAGS) $< -o $@
+	$(CC) $< -o $@  $(CCFLAGS)
 	
 %.o : %.s
-	$(AS)  $(ASFLAGS) $< -o $@
+	$(AS) $< -o $@  $(ASFLAGS)
 	
 clean:
 	rm  $(PRJ).* $(OBJS) 
