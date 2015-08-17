@@ -10,7 +10,6 @@
 #include "210/uart/uart.h"
 #include "210/gpio/gpio.h"
 #include "210/timer/timer.h"
-#include "210/clock/clock.h"
 #include "xprintf/xprintf.h"
 
 #define DELAY_1S_VAL    (0xfffff)
@@ -56,23 +55,46 @@ void delay(volatile uint32_t count)
 	xdev_in(uart0_getc);
 
 	xprintf("FA210 Tester v1\n");
-    
-    SET_SIGNAL_OUT;
 
 	while(1){
+        
+        SET_SIGNAL_OUT;
 
-		start_timimg();
+        xprintf("start finder\n");
+
+        timer_delayus_init(100);
+        SIGNAL_0;
+        timer_delayus_waiting();
 		SIGNAL_1;
-        delay(DELAY_1MS_VAL);
+        timer_delayus_waiting();
 		SIGNAL_0;
-		stop_timimg( &temp );
+		timer_delayus_waiting();
+
+		SET_SIGNAL_IN;
+/*
+        xprintf("waiting\n");
+
+		SET_SIGNAL_IN;
+        
+        while ( !SIGNAL ) {
+        	;
+        }
+
+        start_timimg();
+
+        while ( SIGNAL ) {
+        	;
+        }
+
+        stop_timimg( &temp );
 
 		temp_int = temp;
 		temp_float = fmod(temp, 1)*10000.0f;
 
 		xprintf("time: %d.%dus\n", temp_int, temp_float);
+*/
 
-		delay(DELAY_1S_VAL);
-		
+		delay(DELAY_1S_VAL*2);
+
 	 }
  }

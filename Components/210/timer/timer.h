@@ -17,8 +17,11 @@
 #define TCON   (*((volatile uint32_t *)0xE2500008)) 
 
 
-void  start_timimg(void); // using timer4 for timing
+void start_timimg(void); // using timer4 for timing
 void stop_timimg( float *value );  // stop and return timing result in us
+void timer_delayus( uint32_t value );    //  delay us, value > 50
+void timer_delayus_init( uint32_t value );
+void timer_delayus_waiting();
 
 
 #endif /* TIMER_H_ */

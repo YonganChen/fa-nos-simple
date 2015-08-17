@@ -105,3 +105,79 @@ void stop_timimg( float *value ) {
   *value = (0xffffffff-TCNTO4)*0.03f;
 }
 //--stop_timimg end--
+
+
+static volatile uint32_t timer_delayus_tmp = 0;
+//--------------------------------------------------------------------------
+//--using timer4, called before timer_delayus_start
+void timer_delayus_init( uint32_t value ){
+
+  // init timer4
+   set_prescaler(4, 1);
+   set_divider(4, 1);
+
+   TCNTB4 = 0xffffffff;
+
+   timer_delayus_tmp = ( (float)0xffffffff - ((float)value/0.03f) );
+}
+//--timer_delayus_init--
+
+
+
+//--------------------------------------------------------------------------
+//--using timer4, delay us
+void timer_delayus_waiting() {
+
+   // update TCNTB4 to TCNT4
+   TCON |= 0x02<<20;
+  
+   TCON &= ~(0x02<<20);
+
+   // start timer4
+   TCON |= (0x01<<20);
+
+   // waiting....
+   while ( TCNTO4 > timer_delayus_tmp ) {
+    ;
+   }
+
+   // stop timer4
+   TCON &= ~(0x01<<20);
+
+   return ;
+
+}
+//--timer_delay end--
+
+//--------------------------------------------------------------------------
+//--using timer4, delay us,  value > 50
+void timer_delayus( uint32_t value ) {
+
+    // init timer4
+   set_prescaler(4, 1);
+   set_divider(4, 1);
+
+   TCNTB4 = 0xffffffff;
+
+   timer_delayus_tmp = ( (float)0xffffffff - ((float)value/0.03f) );
+
+   // update TCNTB4 to TCNT4
+   TCON |= 0x02<<20;
+  
+   TCON &= ~(0x02<<20);
+
+   // start timer4
+   TCON |= (0x01<<20);
+
+   // waiting....
+   while ( TCNTO4 > timer_delayus_tmp ) {
+    ;
+   }
+
+   // stop timer4
+   TCON &= ~(0x01<<20);
+
+   return ;
+
+}
+//--timer_delayus--
