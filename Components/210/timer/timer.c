@@ -82,6 +82,8 @@ void start_timimg() {
 
    volatile uint32_t i;
 
+   TCON &= ~(0x01<<20);
+   
    set_prescaler(4, 1);
    set_divider(4, 1);
 

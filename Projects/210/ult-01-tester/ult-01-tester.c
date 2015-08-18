@@ -43,9 +43,12 @@ void delay(volatile uint32_t count)
  void start(void) __attribute__((section(".start")));
  void start() 
  {
-	float temp = 1.23344f;
-	int temp_int;
-	int temp_float;
+	float temp = 0.0f;
+	float temp_cm = 0.0f;
+	uint32_t temp_float = 0;
+	uint32_t temp_int;
+	uint32_t count_f = 0;
+	uint32_t count_s = 0;
 
 	uint8_t getstr[20];
 
@@ -57,10 +60,10 @@ void delay(volatile uint32_t count)
 	xprintf("FA210 Tester v1\n");
 
 	while(1){
-        
+       
         SET_SIGNAL_OUT;
 
-        xprintf("start finder\n");
+       // xprintf("start finder\n");
 
         timer_delayus_init(100);
         SIGNAL_0;
@@ -71,28 +74,49 @@ void delay(volatile uint32_t count)
 		timer_delayus_waiting();
 
 		SET_SIGNAL_IN;
-/*
-        xprintf("waiting\n");
+//        start_timimg();
 
-		SET_SIGNAL_IN;
-        
-        while ( !SIGNAL ) {
-        	;
+       // xprintf("waiting for hight\n");
+ 
+        temp_int = 0;
+        while ( !SIGNAL && temp_int < 0xfffff) {
+        	temp_int++;
+        }
+        if ( temp_int >= 0xfffff ){
+        	count_f++;
+        	xprintf("waiting for hight timeout\n");
+            continue;
         }
 
+ /*     
+        stop_timimg( &temp );
+        temp_int = temp;
+		temp_float = fmod(temp, 1)*10000.0f;
+        xprintf("time: %d.%dus\n", temp_int, temp_float);
+*/
         start_timimg();
-
-        while ( SIGNAL ) {
-        	;
+     //   xprintf("waiting for Low\n");
+        temp_int = 0;
+        while ( SIGNAL && temp_int < 0xfffff ) {
+        	temp_int++;
+        }
+        if ( temp_int >= 0xfffff ){
+        	stop_timimg( &temp );
+        	count_f++;
+        	xprintf("waiting for Low timeout\n");
+            continue;
         }
 
         stop_timimg( &temp );
 
 		temp_int = temp;
-		temp_float = fmod(temp, 1)*10000.0f;
+        count_s++;
+		xprintf("time: %dus  %d   %d   %d\n", temp_int, count_f+count_s, count_s, count_f);
+		temp_cm = ((temp/2.0f)*343.0f)/10000.0f;
+		temp_int = temp_cm;
+		temp_float = fmod(temp_cm, 1)*10.0f;
+		xprintf("rang: %d.%dcm \n", temp_int, temp_float);
 
-		xprintf("time: %d.%dus\n", temp_int, temp_float);
-*/
 
 		delay(DELAY_1S_VAL*2);
 
