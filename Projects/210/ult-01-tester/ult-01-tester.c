@@ -60,13 +60,13 @@ void delay(volatile uint32_t count)
 	xprintf("FA210 Tester v1\n");
 
 	while(1){
-       
+
+        xprintf("hit enter to start finder..."); 
+        xgets(getstr, 1);
+
         SET_SIGNAL_OUT;
-
-       // xprintf("start finder\n");
-
-        timer_delayus_init(100);
         SIGNAL_0;
+        timer_delayus_init(50);
         timer_delayus_waiting();
 		SIGNAL_1;
         timer_delayus_waiting();
